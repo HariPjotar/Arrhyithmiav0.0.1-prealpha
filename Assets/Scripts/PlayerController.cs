@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 	float speedPercent2;
 	bool uSkoku;
 	bool skocio;
+    public bool isGrounded;
 
 	public float ledgeGrabDistanceHor = 3.5f;
 	public float ledgeGrabDistanceUkoso = 3f;
@@ -125,14 +126,47 @@ public class PlayerController : MonoBehaviour {
 
 		Debug.Log ("Beats remaining: " + heartBeats);
 
-		Vector3 bla = controller.transform.position;
-		Vector3 pelvisRay1 = new Vector3 (bla.x, bla.y + 1f, bla.z);
-		Vector3 pelvisRay2 = Vector3.down + new Vector3 (0, -0.5f, 0);
-		Debug.DrawRay (pelvisRay1, pelvisRay2, Color.magenta);
-	}
+		
+
+        if (groundTouch())
+        {
+            
+            isGrounded = true;
+            Animator.SetBool("uSkoku", !isGrounded);
+        }
+        else
+        {
+            isGrounded = false;
+            Animator.SetBool("uSkoku", !isGrounded);
+        }
+        
+    }
+    public Ray drawRayDown()
+    {
+        Vector3 bla = controller.transform.position;
+        Vector3 pelvisRay1 = new Vector3(bla.x, bla.y + 1f, bla.z);
+        Vector3 pelvisRay2 = Vector3.down + new Vector3(0, -0.5f, 0);
+        Debug.DrawRay(pelvisRay1, pelvisRay2, Color.magenta);
+        Ray rayDown = new Ray(pelvisRay1, pelvisRay2);
+        return rayDown;
+
+    }
+
+    public bool groundTouch()
+    {
+        Ray rayDown = drawRayDown();
+        RaycastHit hitGround;
+        if (Physics.Raycast(rayDown, out hitGround) && hitGround.collider.tag == "Ground" && hitGround.distance < 2.75f)
+        {
+                return true;
+        }
+        else { return false; }
 
 
-	void FixedUpdate (){
+    }
+
+
+    void FixedUpdate (){
 		brojacZaJenduSekundu ();
 	}
 
@@ -200,7 +234,7 @@ public class PlayerController : MonoBehaviour {
 		Vector3 nakonIvice = new Vector3 (0, 1, 0);
 		Quaternion NormalnaRotacija = controller.transform.rotation;
 		Quaternion RotacijaNaIvici = Quaternion.Euler (origin.x - 20, origin.y, origin.z);
-
+   
 		//float pom = velocityY;
 		RaycastHit hitDonji;
 		if (Physics.Raycast (donjiRay, out hitDonji, ledgeGrabDistanceHor)) {
@@ -341,7 +375,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Jump(){
-		if (velocityY < 0.25f && velocityY > -0.25f) {
+		if (isGrounded) {
 			Debug.Log ("Sada si u skoku.");
 			float jumpVelocity = 2.0f * (Mathf.Sqrt (-2 * gravity * jumpHeight));
 			velocityY = jumpVelocity;
