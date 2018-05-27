@@ -79,34 +79,7 @@ public class PlayerController : MonoBehaviour {
 
 		Move (inputDir, running);
 
-		//moje
-		if (controller.isGrounded && Input.GetKeyDown(KeyCode.Space)) {
-			uSkoku = true;
-		} else {
-			uSkoku = false;
-		}
-
-		//"SKOCIO" SE TRIGGERUJE KAD PRITISNES SPACE(I CONTROLLER.ISGROUNDED JE TRUE), A "USKOKU" DOK SI U VAZDUHU(TJ DOK JE CONTROLLER.ISGROUNDED = FALSE)
-
-		if (velocityY == 0 && Input.GetKey (KeyCode.Space)) {
-			skocio = true;
-		} else if (velocityY > 0) {
-			skocio = false;
-		} else {
-			skocio = false;
-		}
-
-		if (skocio) {
-			Animator.Play ("jump1");
-		}
-
-		Animator.SetBool ("skocio", skocio);
-		Animator.SetBool ("skok", uSkoku);
-
-		animSpeed = ((running) ? 35f : 6f) * inputDir.magnitude;
-		Animator.SetFloat ("speedPercent", animSpeed);
-
-		//kraj mojeg
+		
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			Jump();
@@ -139,7 +112,38 @@ public class PlayerController : MonoBehaviour {
             isGrounded = false;
             Animator.SetBool("uSkoku", !isGrounded);
         }
-        
+        //moje
+        if (controller.isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            uSkoku = true;
+        }
+        else
+        {
+            uSkoku = false;
+        }
+
+        //"SKOCIO" SE TRIGGERUJE KAD PRITISNES SPACE(I CONTROLLER.ISGROUNDED JE TRUE), A "USKOKU" DOK SI U VAZDUHU(TJ DOK JE CONTROLLER.ISGROUNDED = FALSE)
+
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space)){
+            skocio = true;
+        }
+        else if (isGrounded){
+            skocio = false;
+        }
+
+        if (skocio)
+        {
+            Animator.Play("jump1");
+        }
+
+        Animator.SetBool("skocio", skocio);
+        Animator.SetBool("skok", uSkoku);
+
+        animSpeed = ((running) ? 35f : 6f) * inputDir.magnitude;
+        Animator.SetFloat("speedPercent", animSpeed);
+
+        //kraj mojeg
+
     }
     public Ray drawRayDown()
     {
