@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ledge
   - DonjiRay
+  - Ground
   layers:
   - Default
   - TransparentFX
