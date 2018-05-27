@@ -71,7 +71,7 @@ ModelImporter:
     400062: Box020
     2100000: No Name
     4300000: Box020
-    7400000: Bip01_Anim_walku
+    7400000: Walk_anim
     9500000: //RootNode
     13700000: Box020
   externalObjects: {}
@@ -102,7 +102,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Bip01_Anim_walku
+      name: Walk_anim
       takeName: Bip01_Anim_walku
       firstFrame: 187
       lastFrame: 218

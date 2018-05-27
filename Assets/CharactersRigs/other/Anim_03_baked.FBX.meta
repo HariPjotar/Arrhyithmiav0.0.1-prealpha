@@ -81,7 +81,7 @@ ModelImporter:
     400072: Group001
     2100000: No Name
     4300000: Box020
-    7400000: Anim_03_baked
+    7400000: Idle_anim
     9500000: //RootNode
     13700000: Box020
   externalObjects: {}
@@ -119,7 +119,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Anim_03_baked
+      name: Idle_anim
       takeName: Anim_03_baked
       firstFrame: 0
       lastFrame: 60
