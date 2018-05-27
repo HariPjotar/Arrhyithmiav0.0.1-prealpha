@@ -1,7 +1,6 @@
 ﻿using System;
 
-internal class Weapon : wepInteraction
-{
+internal class Weapon : wepInteraction{
 
 	private Rarity rarity;
 	private double attackSpeed;
@@ -9,8 +8,7 @@ internal class Weapon : wepInteraction
 	private double durability;
 	private string name;
 	private ElementalDamages element;
-	public Weapon() : base()
-	{
+	public Weapon() : base(){
 	}
 
 	public Weapon(Rarity d, double s, double a, double b, string c, ElementalDamages e) : this()

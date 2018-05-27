@@ -36,24 +36,17 @@ public class ThirdPersonCamera : MonoBehaviour {
 
 	public void DynamicCameraSpeed(PlayerController pc){
 		if (!Input.GetKey (KeyCode.LeftShift)) {
-			if(distanceFromTarget > 10f)
-			{
+			if(distanceFromTarget > 10f){
 				distanceFromTarget = distanceFromTarget - 0.5f;
-			}
-			else
-			{
+			}else{
 				distanceFromTarget = 10f;
 			}
-		} else {
-			if (distanceFromTarget < 15f)
-			{
+		}else{
+			if (distanceFromTarget < 15f){
 				distanceFromTarget = distanceFromTarget + 0.1f;
-			}
-			else
-			{
+			}else{
 				distanceFromTarget = 15f;
 			}
-
 		}
 	}
 

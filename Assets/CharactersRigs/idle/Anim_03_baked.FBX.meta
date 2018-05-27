@@ -296,7 +296,7 @@ ModelImporter:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
     resampleCurves: 1
-    optimizeGameObjects: 0
+    optimizeGameObjects: 1
     motionNodeName: <Root Transform>
     rigImportErrors: "Avatar creation failed:\n\tTransform 'b_pelvis' for human bone
       'Hips' not found\n"
