@@ -23,17 +23,18 @@ public class PlayerController : MonoBehaviour {
 	float speedPercent;
 	float speedPercent2;
 	bool uSkoku;
+    bool skokwr;
 	bool skocio;
     public bool isGrounded;
-
+    public float qez;
 	//otkucaji za srce
 	public float heartBeats = 500f;
 	public float jedan = 1;
 
 	public float turnSmoothTime = 0.2f;
 	public float turnSmoothVelocity;
-
-	Transform cameraT;
+    
+    Transform cameraT;
 	CharacterController controller;
 
 	public float getCurrentSpeed(){
@@ -42,7 +43,8 @@ public class PlayerController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		cameraT = Camera.main.transform;
+        qez = -1.3f;
+        cameraT = Camera.main.transform;
 		controller = GetComponent<CharacterController> ();
 
 		Animator = GetComponent<Animator> ();
@@ -67,16 +69,18 @@ public class PlayerController : MonoBehaviour {
 			controller.transform.position = Vector3.zero;
 		}
 
-		Debug.Log ("Beats remaining: " + heartBeats);
+        //Debug.Log ("Beats remaining: " + heartBeats);
 
-		
+
+        
+        
 
         if (groundTouch())
         {
             
             isGrounded = true;
             Animator.SetBool("uSkoku", !isGrounded);
-        }
+		}
         else
         {
             isGrounded = false;
@@ -86,35 +90,122 @@ public class PlayerController : MonoBehaviour {
         if (controller.isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
             uSkoku = true;
-        }
+		}
         else
         {
             uSkoku = false;
         }
 
+		if(Animator.GetBool("WallRun")){Animator.SetBool ("uSkoku", false);}
+
         //"SKOCIO" SE TRIGGERUJE KAD PRITISNES SPACE(I CONTROLLER.ISGROUNDED JE TRUE), A "USKOKU" DOK SI U VAZDUHU(TJ DOK JE CONTROLLER.ISGROUNDED = FALSE)
 
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space)){
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
             skocio = true;
         }
-        else if (isGrounded){
+        else if (isGrounded)
+        {
             skocio = false;
         }
 
-        if (skocio)
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            Animator.Play("jump1");
+            skokwr = true;
         }
-
+        else if (isGrounded)
+        {
+            skokwr = false;
+        }
+        else skokwr = true;
+        
         Animator.SetBool("skocio", skocio);
         Animator.SetBool("skok", uSkoku);
 
         animSpeed = ((running) ? 35f : 6f) * inputDir.magnitude;
         Animator.SetFloat("speedPercent", animSpeed);
 
+        Ray rightRay1 = drawRayVectorDeg(inputDir, 45);
+        Ray rightRay2 = drawRayVectorDeg(inputDir, 80);
+        Ray frontRay1 = drawRayVectorDeg(inputDir, 10);
+        Ray frontRay2 = drawRayVectorDeg(inputDir, -10);
+		Ray leftRay1 = drawRayVectorDeg(inputDir, -45);
+		Ray leftRay2 = drawRayVectorDeg(inputDir, -80);
+
+        RaycastHit hitSmth;
+        bool wrpos = wallRunPossible(inputDir, frontRay2, frontRay2, new RaycastHit());
+		bool wrposleft = wallRunPossible(inputDir, frontRay1, frontRay1, new RaycastHit());
+        if (Animator.GetBool("skocio")) this.qez = -1.3f;
+        if (wrpos)
+        {
+            float rez = -1.3f;
+			if (skokwr && Physics.Raycast (rightRay2, out hitSmth) && Physics.Raycast (rightRay1, out hitSmth) && hitSmth.collider.tag == "RunnableWall" && hitSmth.distance < 4f) {
+				rez = cube (qez, 1.3f, 0.01f);
+				Debug.Log (" KVADRAD JE OVOLIKO : " + rez);
+				velocityY += -rez;
+				Debug.Log ("BRAVO!");
+			}
+
+		}else { Debug.Log("Not Possible"); qez = -1.3f; Animator.SetBool ("WallRun", false); }
+
+		if (wrposleft)
+		{
+			float rez = -1.3f;
+			if (skokwr && Physics.Raycast (leftRay2, out hitSmth) && Physics.Raycast (leftRay1, out hitSmth) && hitSmth.collider.tag == "RunnableWall" && hitSmth.distance < 4f) {
+				rez = cube (qez, 1.3f, 0.01f);
+				Debug.Log (" KVADRAD JE OVOLIKO : " + rez);
+				velocityY += -rez;
+				Debug.Log ("BRAVO!");
+			}
+
+		}else { Debug.Log("Not Possible"); qez = -1.3f; Animator.SetBool ("WallRun", false); }
+
+		if ((skokwr && Physics.Raycast (leftRay2, out hitSmth) && Physics.Raycast (leftRay1, out hitSmth) && hitSmth.collider.tag == "RunnableWall" && hitSmth.distance < 4f) ||
+		    (skokwr && Physics.Raycast (rightRay2, out hitSmth) && Physics.Raycast (rightRay1, out hitSmth) && hitSmth.collider.tag == "RunnableWall" && hitSmth.distance < 4f)) {
+			Animator.SetBool ("WallRun", true);
+		} else {
+			Animator.SetBool ("WallRun", false);
+		}
+        
         //kraj mojeg
 
+		if (Input.GetKey (KeyCode.T)) {
+			Animator.Play ("WallRun");
+		}
+
     }
+    // x^2 jednacina 
+    public float cube(float i, float j, float k)
+    {
+        if (i < j) this.qez += k;
+        return i * i * i;
+    }
+    // WallRun Mogucnost 
+    public bool wallRunPossible(Vector2 inp, Ray pos, Ray pos2, RaycastHit hitSmth)
+    {
+
+        bool rez = true;
+        if (rez && skokwr)
+        {
+
+
+            if (Physics.Raycast(pos, out hitSmth) && hitSmth.distance < 2f)
+            {
+                rez = false;
+            }
+            if (Physics.Raycast(pos2, out hitSmth) && hitSmth.distance < 2f)
+            {
+                
+                rez = false;
+            }
+
+        }
+        else if (!Animator.GetBool("uSkoku")) {  rez =  true;   }
+        
+        return rez;
+    }
+
+    
     public Ray drawRayDown()
     {
         Vector3 bla = controller.transform.position;
@@ -219,7 +310,24 @@ public class PlayerController : MonoBehaviour {
 			return 0f;
 		}
 	}
+    public Ray drawRayVectorDeg(Vector2 inputDir, int deg)
+    {
+        Vector3 player = controller.transform.position;
+        Vector3 v1 = new Vector3(player.x, player.y + 4f, player.z);
+     
+        
+        float targetRotation = Mathf.Atan2(inputDir.x, inputDir.y) * Mathf.Rad2Deg + cameraT.eulerAngles.y;
+        transform.eulerAngles = Vector3.up * Mathf.SmoothDampAngle(transform.eulerAngles.y, targetRotation, ref turnSmoothVelocity, GetModifiedSmoothTime(turnSmoothTime));
+        Quaternion q1 =  Quaternion.Euler(0, deg + targetRotation, 0);
+        
+        
+        Debug.DrawRay(v1, q1 * new Vector3(0,0,0.5f), Color.magenta);
+        return new Ray(v1, q1 * new Vector3(0, 0, 0.5f));
+        
 
+
+    }
+    
 	void Move(Vector2 inputDir, bool running){
 		if (inputDir != Vector2.zero) {
 			float targetRotation = Mathf.Atan2 (inputDir.x, inputDir.y) * Mathf.Rad2Deg + cameraT.eulerAngles.y;
@@ -227,8 +335,7 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		velocityY += 3 * (Time.deltaTime * gravity);
-		//float targetSpeed = ((running) ? runSpeed : walkSpeed) * inputDir.magnitude;
-		targetSpeed = ((running) ? ((targetSpeed > 35f) ? 35f : targetSpeed +0.8f)  :((targetSpeed > 6f)? ((targetSpeed <=7.3f)?6f:targetSpeed - 1.2f): Walk(targetSpeed))) * inputDir.magnitude;
+		targetSpeed = ((running) ? ((targetSpeed > 35f) ? 35f : targetSpeed +0.8f)  :((targetSpeed > 6f)? ((targetSpeed <=7.3f)?6f:targetSpeed - 1.3f): Walk(targetSpeed))) * inputDir.magnitude;
 		currentSpeed = Mathf.SmoothDamp (currentSpeed, targetSpeed, ref speedSmoothVelocity, GetModifiedSmoothTime(speedSmoothTime));
 
 		Vector3 velocity = transform.forward * currentSpeed + Vector3.up * velocityY;

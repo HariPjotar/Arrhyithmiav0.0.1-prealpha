@@ -9,7 +9,7 @@ public class ThirdPersonCamera : MonoBehaviour {
 
 	public bool lockCursor;
 
-	Vector2 pitchminmax = new Vector2 (-40, 85);
+	Vector2 pitchminmax = new Vector2 (-20, 85);
 
 	public float mouseSensitivity = 5f;
 	public Transform target;

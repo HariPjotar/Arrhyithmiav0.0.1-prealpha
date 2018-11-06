@@ -51,9 +51,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\scri.cs" />
      <Compile Include="Assets\Scripts\a.cs" />
      <Compile Include="Assets\Scripts\GlobalRandom.cs" />
      <Compile Include="Assets\Scripts\Main.cs" />
+     <Compile Include="Assets\Scripts\playerCollision.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\ThirdPersonCamera.cs" />
  <Reference Include="UnityEngine.UI">
